@@ -6,46 +6,53 @@ using namespace std;
 #define M_PI (3.141592653589793)
 #define M_2PI (2. * M_PI)
 
+template <typename T>
 struct Node
 {
     long long MyOrder;
-    double Value;
+    T Value;
     Node *Next;
+    Node(long long MyOrder = 0, T Value = 0, Node *Next = nullptr)
+    {
+        this->MyOrder = MyOrder;
+        this->Value = Value;
+        this->Next = Next;
+    }
 };
 
+template <typename T>
 class Mnogochlen
 {
-    Node *Head;
+    Node<T> *Head;
 
     long long OrderOfMnogochlen;
 
-    int Epsilon; 
+    T Epsilon;
 
     Mnogochlen Normalize() const;
 
 public:
+    T GetEpsilon() const;
 
-    int GetEpsilon()const;
-
-    Node *GetHead() const;
+    Node<T> *GetHead() const;
 
     long long GetOrderOfMnogochlen() const;
 
-    Mnogochlen(long long Order, int Epsilon);
+    Mnogochlen(long long Order, T Epsilon);
 
-    Mnogochlen(const Mnogochlen& Other);
+    Mnogochlen(const Mnogochlen &Other);
 
     ~Mnogochlen();
 
-    void Set(long long Order, double Coef);
+    void Set(long long Order, T Coef);
 
-    double operator[](long long Order) const;
+    T operator[](long long Order) const;
 
     Mnogochlen operator+(const Mnogochlen &Other) const;
 
     Mnogochlen operator-(const Mnogochlen &Other) const;
 
-    Mnogochlen operator*(double Val) const;
+    Mnogochlen operator*(T Val) const;
 
     bool operator==(const Mnogochlen &Other) const;
 
@@ -53,7 +60,14 @@ public:
 
     void GetRoots() const;
 
-    double CountValue(double x) const;
+    T CountValue(T x) const;
 
-    friend ostream &operator<<(ostream &os, const Mnogochlen &Obj);
+    // friend ostream &operator<<(ostream &os, const Mnogochlen &Obj);
+
+    /*
+    friend bool operator>(const T& a, const T& b);
+    friend bool operator<(const T& a, const T& b);
+    friend bool operator>=(const T& a, const T& b);
+    friend bool operator>=(const T& a, const T& b);
+    */
 };

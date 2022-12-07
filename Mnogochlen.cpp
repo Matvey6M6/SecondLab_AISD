@@ -1,11 +1,38 @@
 #include "Mnogochlen.hpp"
+#include <complex>
 
-int Mnogochlen::GetEpsilon() const {return this->Epsilon;}
+template <typename T>
+inline bool operator>(const complex<T> a, const complex<T> b)
+{
+    return ((a.real() > b.real()) && (a.imag() > b.imag()));
+}
 
-Mnogochlen Mnogochlen::Normalize() const
+template <typename T>
+inline bool operator<(const complex<T> a, const complex<T> b)
+{
+    return ((a.real() < b.real()) && (a.imag() < b.imag()));
+}
+
+template <typename T>
+inline bool operator<=(const complex<T> a, const complex<T> b)
+{
+    return ((a.real() <= b.real()) && (a.imag() <= b.imag()));
+}
+
+template <typename T>
+inline bool operator>=(const complex<T> a, const complex<T> b)
+{
+    return ((a.real() >= b.real()) && (a.imag() >= b.imag()));
+}
+
+template <typename T>
+T Mnogochlen<T>::GetEpsilon() const { return this->Epsilon; }
+
+template <typename T>
+Mnogochlen<T> Mnogochlen<T>::Normalize() const
 {
     Mnogochlen *Newbie = new Mnogochlen(GetOrderOfMnogochlen(), GetEpsilon());
-    double Delitel = (*this)[GetOrderOfMnogochlen()];
+    T Delitel = T((*this)[GetOrderOfMnogochlen()]);
     for (int i = OrderOfMnogochlen; i >= 0; i--)
     {
         Newbie->Set(i, ((*this)[i] / Delitel));
@@ -13,19 +40,22 @@ Mnogochlen Mnogochlen::Normalize() const
     return *Newbie;
 }
 
-Node *Mnogochlen::GetHead() const
+template <typename T>
+Node<T> *Mnogochlen<T>::GetHead() const
 {
     return Head;
 }
 
-long long Mnogochlen::GetOrderOfMnogochlen() const
+template <typename T>
+long long Mnogochlen<T>::GetOrderOfMnogochlen() const
 {
     return OrderOfMnogochlen;
 }
 
-Mnogochlen::Mnogochlen(long long Order, int Epsilon)
+template <typename T>
+Mnogochlen<T>::Mnogochlen(long long Order, T Epsilon)
 {
-    if (Order >= 0 || Epsilon > 0)
+    if (Order >= 0 || Epsilon > T(0))
     {
         OrderOfMnogochlen = Order;
         Head = nullptr;
@@ -38,36 +68,39 @@ Mnogochlen::Mnogochlen(long long Order, int Epsilon)
     }
 }
 
-Mnogochlen::Mnogochlen(const Mnogochlen& Other)
+template <typename T>
+Mnogochlen<T>::Mnogochlen(const Mnogochlen &Other)
 {
     OrderOfMnogochlen = Other.GetOrderOfMnogochlen();
     Head = nullptr;
     this->Epsilon = Other.GetEpsilon();
 
-    Node* P = Other.GetHead();
+    Node<T> *P = Other.GetHead();
 
-    while(P != nullptr)
+    while (P != nullptr)
     {
-        Set(P->MyOrder,P->Value);
-        P=P->Next;
+        Set(P->MyOrder, P->Value);
+        P = P->Next;
     }
 }
 
-Mnogochlen::~Mnogochlen()
+template <typename T>
+Mnogochlen<T>::~Mnogochlen()
 {
     while (Head->Next != nullptr)
     {
-        Node *tmp = Head;
+        Node<T> *tmp = Head;
         Head = Head->Next;
         delete tmp;
     }
 }
 
-void Mnogochlen::Set(long long Order, double Coef)
+template <typename T>
+void Mnogochlen<T>::Set(long long Order, T Coef)
 {
-    if (Coef == 0)
+    if (Coef == T(0))
     {
-        cout << "\n!!!Only non-zero coefs will be saved!!!" << endl;
+        // cout << "\n!!!Only non-zero coefs will be saved!!!" << endl;
         if (Order == GetOrderOfMnogochlen())
         {
             OrderOfMnogochlen -= 1;
@@ -81,7 +114,7 @@ void Mnogochlen::Set(long long Order, double Coef)
     }
     if (Head == nullptr)
     {
-        Node *newbie = new Node;
+        Node<T> *newbie = new Node<T>;
         newbie->MyOrder = Order;
         newbie->Value = Coef;
         newbie->Next = nullptr;
@@ -89,13 +122,13 @@ void Mnogochlen::Set(long long Order, double Coef)
         return;
     }
 
-    Node *PointerA = GetHead();
-    Node *PointerB = PointerA;
+    Node<T> *PointerA = GetHead();
+    Node<T> *PointerB = PointerA;
     for (long long i = 0; i < GetOrderOfMnogochlen() + 1 && PointerA; i++)
     {
-        if (PointerA->Next == nullptr && Order < PointerA->MyOrder) //последний эдемент
+        if (PointerA->Next == nullptr && Order < PointerA->MyOrder) // последний эдемент
         {
-            Node *newbie = new Node;
+            Node<T> *newbie = new Node<T>;
             newbie->MyOrder = Order;
             newbie->Value = Coef;
             newbie->Next = nullptr;
@@ -110,7 +143,7 @@ void Mnogochlen::Set(long long Order, double Coef)
         }
         else if (PointerA->MyOrder < Order) // добавить между
         {
-            Node *newbie = new Node;
+            Node<T> *newbie = new Node<T>;
             newbie->MyOrder = Order;
             newbie->Value = Coef;
 
@@ -123,9 +156,10 @@ void Mnogochlen::Set(long long Order, double Coef)
     }
 }
 
-double Mnogochlen::operator[](long long Order) const
+template <typename T>
+T Mnogochlen<T>::operator[](long long Order) const
 {
-    Node *Pointer = GetHead();
+    Node<T> *Pointer = GetHead();
 
     while (Pointer)
     {
@@ -136,7 +170,8 @@ double Mnogochlen::operator[](long long Order) const
     return 0;
 }
 
-Mnogochlen Mnogochlen::operator+(const Mnogochlen &Other) const
+template <typename T>
+Mnogochlen<T> Mnogochlen<T>::operator+(const Mnogochlen &Other) const
 {
     long long Maximum = 0;
 
@@ -153,10 +188,10 @@ Mnogochlen Mnogochlen::operator+(const Mnogochlen &Other) const
     }
 
     return Result;
-
 }
 
-Mnogochlen Mnogochlen::operator-(const Mnogochlen &Other) const
+template <typename T>
+Mnogochlen<T> Mnogochlen<T>::operator-(const Mnogochlen &Other) const
 {
     long long Maximum = 0;
 
@@ -175,12 +210,13 @@ Mnogochlen Mnogochlen::operator-(const Mnogochlen &Other) const
     return Result;
 }
 
-Mnogochlen Mnogochlen::operator*(double Val) const
+template <typename T>
+Mnogochlen<T> Mnogochlen<T>::operator*(T Val) const
 {
-    Node *Pointer = GetHead();
+    Node<T> *Pointer = GetHead();
     Mnogochlen Result(Pointer->MyOrder, this->GetEpsilon());
 
-    while(Pointer != NULL)
+    while (Pointer != NULL)
     {
         Result.Set(Pointer->MyOrder, Pointer->Value * Val);
         Pointer = Pointer->Next;
@@ -188,120 +224,130 @@ Mnogochlen Mnogochlen::operator*(double Val) const
     return Result;
 }
 
-Mnogochlen operator*(const int val, const Mnogochlen& M) // обеспечивает коммутативность
+template <typename T>
+Mnogochlen<T> operator*(const T val, const Mnogochlen<T> &M) // обеспечивает коммутативность
 {
     return M * val;
 }
 
-bool Mnogochlen::operator==(const Mnogochlen &Other) const
+template <typename T>
+bool Mnogochlen<T>::operator==(const Mnogochlen &Other) const
 {
-    cout<<"Epsilon = "<<Epsilon<<endl;
-    Node* P1 = this->GetHead();
-    Node* P2 = Other.GetHead();
+    cout << "Epsilon = " << Epsilon << endl;
+    Node<T> *P1 = this->GetHead();
+    Node<T> *P2 = Other.GetHead();
 
-    if(P1 != nullptr && P2!= nullptr)
+    if (P1 != nullptr && P2 != nullptr)
     {
-        if(P1->MyOrder == P2->MyOrder)
+        if (P1->MyOrder == P2->MyOrder)
         {
-            while(P1 != nullptr && P2!= nullptr)
+            while (P1 != nullptr && P2 != nullptr)
             {
-                if((abs(P1->Value - P2->Value) < Epsilon))
+                if (T(abs(P1->Value - P2->Value)) < Epsilon)
                 {
-                    if(P1->MyOrder == P2->MyOrder && P1->MyOrder == 0) return true;
+                    if (P1->MyOrder == P2->MyOrder && P1->MyOrder == 0)
+                        return true;
                 }
-                else return false;
+                else
+                    return false;
                 P1 = P1->Next;
                 P2 = P2->Next;
             }
         }
-        else return false;
+        else
+            return false;
     }
-    if(this->GetHead() || Other.GetHead()) return false;
+    if (this->GetHead() || Other.GetHead())
+        return false;
     return true;
 }
 
-bool Mnogochlen::operator!=(const Mnogochlen &Other) const
+template <typename T>
+bool Mnogochlen<T>::operator!=(const Mnogochlen &Other) const
 {
-    cout<<"Epsilon = "<<Epsilon<<endl;
-    Node* P1 = this->GetHead();
-    Node* P2 = Other.GetHead();
+    cout << "Epsilon = " << Epsilon << endl;
+    Node<T> *P1 = this->GetHead();
+    Node<T> *P2 = Other.GetHead();
 
-    if(P1 != nullptr && P2!= nullptr)
+    if (P1 != nullptr && P2 != nullptr)
     {
-        if(P1->MyOrder != P2->MyOrder)
+        if (P1->MyOrder != P2->MyOrder)
         {
             return true;
         }
-        else 
+        else
         {
-            while(P1 != nullptr && P2!= nullptr)
+            while (P1 != nullptr && P2 != nullptr)
             {
-                if((abs(P1->Value - P2->Value) > Epsilon))
+                if (T(abs(P1->Value - P2->Value)) > Epsilon)
                 {
                     return true;
                 }
-                else 
+                else
                 {
-                    if(P1->MyOrder - P2->MyOrder && P1->MyOrder == 0) return false;
+                    if (P1->MyOrder - P2->MyOrder && P1->MyOrder == 0)
+                        return false;
                 }
                 P1 = P1->Next;
                 P2 = P2->Next;
             }
         }
     }
-    if(this->GetHead() || Other.GetHead()) return true;
+    if (this->GetHead() || Other.GetHead())
+        return true;
     return false;
 }
 
-void Mnogochlen::GetRoots() const
+template <typename T>
+void Mnogochlen<T>::GetRoots() const
 {
     if (GetOrderOfMnogochlen() != 3)
     {
         throw RangeError("Order is not 3");
     }
-    Node *Pointer = GetHead();
+    Node<T> *Pointer = GetHead();
     Mnogochlen Normalized = Normalize();
     // cout << Normalized << endl;
-    double a = Normalized[2];
-    double b = Normalized[1];
-    double c = Normalized[0];
-    double x1;
-    double x2;
-    double x3;
-    double q, r, r2, q3;
-    q = (a * a - 3. * b) / 9.;
-    r = (a * (2. * a * a - 9. * b) + 27. * c) / 54.;
+    T a = Normalized[2];
+    T b = Normalized[1];
+    T c = Normalized[0];
+    T x1;
+    T x2;
+    T x3;
+    T q, r, r2, q3;
+    q = (a * a - T(3) * b) / T(9);
+    r = (a * (T(2) * a * a - T(9) * b) + T(27) * c) / T(54);
     r2 = r * r;
     q3 = q * q * q;
     if (r2 < q3)
     {
-        double t = acos(r / sqrt(q3));
-        a /= 3.;
-        q = -2. * sqrt(q);
-        x1 = q * cos(t / 3.) - a;
-        x2 = q * cos((t + M_2PI) / 3.) - a;
-        x3 = q * cos((t - M_2PI) / 3.) - a;
+        T t = acos(r / sqrt(q3));
+        a /= T(3.);
+        q = T(-2.) * sqrt(q);
+        x1 = q * cos(t / T(3.)) - a;
+        x2 = q * cos((t + T(M_2PI)) / T(3.)) - a;
+        x3 = q * cos((t - T(M_2PI)) / T(3.)) - a;
         cout << "Root 1 = " << x1 << endl;
         cout << "Root 2 = " << x2 << endl;
         cout << "Root 3 = " << x3 << endl;
     }
     else
     {
-        double aa, bb;
-        if (r <= 0.)
+        T aa, bb;
+        if (r <= T(0))
             r = -r;
-        aa = -pow(r + sqrt(r2 - q3), 1. / 3.);
-        if (aa != 0.)
+        aa = -pow(r + sqrt(r2 - q3), T(1) / T(3));
+        if (aa != T(0))
             bb = q / aa;
         else
-            bb = 0.;
-        a /= 3.;
+            bb = T(0);
+        a /= T(3);
         q = aa + bb;
         r = aa - bb;
         x1 = q - a;
-        x2 = (-0.5) * q - a;
-        x3 = (sqrt(3.) * 0.5) * fabs(r);
-        if (x3 == 0.)
+        x2 = T(-0.5) * q - a;
+        x3 = (sqrt(T(3)) * T(0.5)) * abs(r);
+        if (x3 == T(0.))
         {
             cout << "Root 1 = " << x1 << endl;
             cout << "Root 2 = " << x2 << endl;
@@ -310,30 +356,27 @@ void Mnogochlen::GetRoots() const
     }
 }
 
-/*Mnogochlen::Mnogochlen(const Mnogochlen& src)
+template <typename T>
+T Mnogochlen<T>::CountValue(T x) const
 {
-    this->OrderOfMnogochlen = src.GetOrderOfMnogochlen();
-    
-    Node* Pointer = src.GetHead();
-
-    int i = OrderOfMnogochlen;
-
-    while(Pointer)
-    {
-        this->Set(i, Pointer->Value);
-        Pointer = Pointer->Next;
-        i--;
-    }
-}*/
-
-double Mnogochlen::CountValue(double x) const
-{
-    Node *Pointer = GetHead();
-    double Ans = 0;
+    Node<T> *Pointer = GetHead();
+    T Ans = T(0);
     for (long long i = 0; i < GetOrderOfMnogochlen() + 1 && Pointer; i++)
     {
-        Ans += Pointer->Value * pow(x, Pointer->MyOrder);
+        Ans += Pointer->Value * pow(x, T(Pointer->MyOrder));
         Pointer = Pointer->Next;
     }
     return Ans;
 }
+
+/*template struct Node<int>;
+template struct Node<float>;
+template struct Node<double>;
+template struct Node<complex<float>>;
+template struct Node<complex<double>>;*/
+
+template class Mnogochlen<int>;
+template class Mnogochlen<float>;
+template class Mnogochlen<double>;
+template class Mnogochlen<complex<float>>;
+template class Mnogochlen<complex<double>>;
