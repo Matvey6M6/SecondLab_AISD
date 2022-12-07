@@ -1,4 +1,0 @@
-﻿  main.cpp
-C:\Users\RELOAD\source\repos\AISD-Lab1\main.cpp(85,16): warning C4244: инициализация: преобразование "__int64" в "int", возможна потеря данных
-C:\Users\RELOAD\source\repos\AISD-Lab1\main.cpp(169,15): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-  SecondLab_AISD.vcxproj -> C:\Users\RELOAD\Documents\SecondLab_AISD\x64\Debug\SecondLab_AISD.exe
