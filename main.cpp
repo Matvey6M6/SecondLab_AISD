@@ -5,18 +5,16 @@
 using namespace std;
 
 template <typename T>
-T check()
+void check(T& Value)
 {
-    T Value = T(0);
+    Value = 0;
 
     while (!(cin >> Value) || (cin.peek() != '\n'))
     {
         cin.clear();
-        while (cin.get() != '\n')
-            ;
+        while (cin.get() != '\n');
         cout << "Incorrect value\n";
     }
-    return Value;
 }
 
 template <typename T>
@@ -25,16 +23,17 @@ Mnogochlen<T> *MenuInput()
     cout << "Create poilynominal menu\n\n"
          << endl;
 
-    cout << "Order of Mnogochlen: " << endl;
-    long long OrderOfMnogochlen = check<long long>();
+    cout << "For complex values input must be like: (real,img) where real and img are float/double values\n\n"
+        << endl;
 
-    cout << "Epsilon: " << endl;
-    T Epsilon = check<T>();
+    cout << "Order of Mnogochlen: " << endl;
+    long long OrderOfMnogochlen;
+    check<long long>(OrderOfMnogochlen);
 
     Mnogochlen<T> *Newbie = NULL;
     try
     {
-        Newbie = new Mnogochlen<T>(OrderOfMnogochlen, Epsilon);
+        Newbie = new Mnogochlen<T>(OrderOfMnogochlen);
     }
     catch (exception e)
     {
@@ -44,7 +43,8 @@ Mnogochlen<T> *MenuInput()
     for (long long i = OrderOfMnogochlen; i >= 0; i--)
     {
         cout << "Coef by " << i << ":\n";
-        T Coefficient = check<T>();
+        T Coefficient;
+        check<T>(Coefficient);
         Newbie->Set(i, Coefficient);
         cout << endl;
     }
@@ -78,7 +78,8 @@ template <typename T>
 T InputValue()
 {
     cout << "Give a value: " << endl;
-    T X = check<T>();
+    T X;
+    check<T>(X);
     return X;
 }
 
@@ -176,9 +177,11 @@ void ChangeCoefByIndex(Mnogochlen<T> *Object)
          << endl;
     cout << (*Object) << endl;
     cout << "Input index: ";
-    int Index = check<int>();
+    int Index;
+    check<int>(Index);
     cout << "Input new value: ";
-    T value = check<T>();
+    T value;
+    check<T>(value);
     (*Object).Set(Index, value);
     cout << "Value: " << (*Object)[Index] << endl;
 }
@@ -190,6 +193,11 @@ void CompareTwoPolynoms(const Mnogochlen<T> *Object)
 
     cout << "Compare two polynoms menu\n"
          << endl;
+
+    cout << "\nGive an epsilon: ";
+
+    check<T>(Mnogochlen<T>::Epsilon);
+
 
     cout << "Firstly input another polynom" << endl;
     cout << "Any key to input another polynom" << endl;
@@ -224,9 +232,16 @@ void CompareTwoPolynoms(const Mnogochlen<T> *Object)
 template <typename T>
 void GetRoots(const Mnogochlen<T> *Object)
 {
-    if (Object->GetOrderOfMnogochlen() != 3)
+    try {
+        if (Object->GetOrderOfMnogochlen() != 3)
+        {
+            throw RangeError("Incorrect order");
+        }
+    }
+    catch (RangeError ex)
     {
-        throw RangeError("Incorrect order");
+       cout<<"The polynom's order does not equals 3!!!"<<endl;
+        return;
     }
 
     system("cls");
@@ -287,7 +302,6 @@ int Menu1()
                 GiveAnX<T>(Object);
                 break;
             case 50: // Sum
-
                 Sum<T>(Object);
                 break;
             case 51: // Substract
@@ -300,7 +314,7 @@ int Menu1()
                 ChangeCoefByIndex<T>(Object);
                 break;
             case 54: // Get premitive fucntion
-                GetRoots<T>(Object);
+                GetRoots<T>(Object);  
                 break;
             case 55: // Compare two polynoms
                 CompareTwoPolynoms<T>(Object);

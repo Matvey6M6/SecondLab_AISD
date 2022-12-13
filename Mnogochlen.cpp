@@ -26,12 +26,9 @@ inline bool operator>=(const complex<T> a, const complex<T> b)
 }
 
 template <typename T>
-T Mnogochlen<T>::GetEpsilon() const { return this->Epsilon; }
-
-template <typename T>
 Mnogochlen<T> Mnogochlen<T>::Normalize() const
 {
-    Mnogochlen *Newbie = new Mnogochlen(GetOrderOfMnogochlen(), GetEpsilon());
+    Mnogochlen *Newbie = new Mnogochlen(GetOrderOfMnogochlen());
     T Delitel = T((*this)[GetOrderOfMnogochlen()]);
     for (int i = OrderOfMnogochlen; i >= 0; i--)
     {
@@ -53,7 +50,7 @@ long long Mnogochlen<T>::GetOrderOfMnogochlen() const
 }
 
 template <typename T>
-Mnogochlen<T>::Mnogochlen(long long Order, T Epsilon)
+Mnogochlen<T>::Mnogochlen(long long Order)
 {
     if (Order >= 0 || Epsilon > T(0))
     {
@@ -73,7 +70,6 @@ Mnogochlen<T>::Mnogochlen(const Mnogochlen &Other)
 {
     OrderOfMnogochlen = Other.GetOrderOfMnogochlen();
     Head = nullptr;
-    this->Epsilon = Other.GetEpsilon();
 
     Node<T> *P = Other.GetHead();
 
@@ -100,7 +96,6 @@ void Mnogochlen<T>::Set(long long Order, T Coef)
 {
     if (Coef == T(0))
     {
-        // cout << "\n!!!Only non-zero coefs will be saved!!!" << endl;
         if (Order == GetOrderOfMnogochlen())
         {
             OrderOfMnogochlen -= 1;
@@ -177,7 +172,7 @@ Mnogochlen<T> Mnogochlen<T>::operator+(const Mnogochlen &Other) const
 
     this->GetOrderOfMnogochlen() < Other.GetOrderOfMnogochlen() ? Maximum = Other.GetOrderOfMnogochlen() : Maximum = this->GetOrderOfMnogochlen();
 
-    Mnogochlen Result(Maximum, this->GetEpsilon());
+    Mnogochlen Result(Maximum);
 
     long long CurrentOrder = Maximum;
 
@@ -197,7 +192,7 @@ Mnogochlen<T> Mnogochlen<T>::operator-(const Mnogochlen &Other) const
 
     this->GetOrderOfMnogochlen() < Other.GetOrderOfMnogochlen() ? Maximum = Other.GetOrderOfMnogochlen() : Maximum = this->GetOrderOfMnogochlen();
 
-    Mnogochlen Result(Maximum, this->GetEpsilon());
+    Mnogochlen Result(Maximum);
 
     long long CurrentOrder = Maximum;
 
@@ -214,7 +209,7 @@ template <typename T>
 Mnogochlen<T> Mnogochlen<T>::operator*(T Val) const
 {
     Node<T> *Pointer = GetHead();
-    Mnogochlen Result(Pointer->MyOrder, this->GetEpsilon());
+    Mnogochlen Result(Pointer->MyOrder);
 
     while (Pointer != NULL)
     {

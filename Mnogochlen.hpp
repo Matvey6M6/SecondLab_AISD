@@ -27,18 +27,17 @@ class Mnogochlen
 
     long long OrderOfMnogochlen;
 
-    T Epsilon;
-
     Mnogochlen Normalize() const;
 
 public:
-    T GetEpsilon() const;
+
+    static T Epsilon;
 
     Node<T> *GetHead() const;
 
     long long GetOrderOfMnogochlen() const;
 
-    Mnogochlen(long long Order, T Epsilon);
+    Mnogochlen(long long Order);
 
     Mnogochlen(const Mnogochlen &Other);
 
@@ -71,3 +70,7 @@ public:
     friend bool operator>=(const T& a, const T& b);
     */
 };
+
+template <typename T>
+T Mnogochlen<T>::Epsilon = T(0);
+
