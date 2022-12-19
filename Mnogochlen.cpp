@@ -240,7 +240,7 @@ bool Mnogochlen<T>::operator==(const Mnogochlen &Other) const
             {
                 if (T(abs(P1->Value - P2->Value)) < Epsilon)
                 {
-                    if (P1->MyOrder == P2->MyOrder && P1->MyOrder == 0)
+                    if (P1->MyOrder == P2->MyOrder && P1->Next == nullptr && P2->Next == nullptr)
                         return true;
                 }
                 else
@@ -252,8 +252,7 @@ bool Mnogochlen<T>::operator==(const Mnogochlen &Other) const
         else
             return false;
     }
-    if (this->GetHead() || Other.GetHead())
-        return false;
+    if (this->GetHead() || Other.GetHead()) { return false; }
     return true;
 }
 
@@ -293,6 +292,63 @@ bool Mnogochlen<T>::operator!=(const Mnogochlen &Other) const
     return false;
 }
 
+void Mnogochlen<int>::GetRoots() const
+{
+    if (GetOrderOfMnogochlen() != 3)
+    {
+        throw RangeError("Order is not 3");
+    }
+    //Node* Pointer = GetHead();
+    Mnogochlen Normalized = Normalize();
+    // cout << Normalized << endl;
+    double a = Normalized[2];
+    double b = Normalized[1];
+    double c = Normalized[0];
+    double x1;
+    double x2;
+    double x3;
+    double q, r, r2, q3;
+    q = (a * a - 3. * b) / 9.;
+    r = (a * (2. * a * a - 9. * b) + 27. * c) / 54.;
+    r2 = r * r;
+    q3 = q * q * q;
+    if (r2 < q3)
+    {
+        double t = acos(r / sqrt(q3));
+        a /= 3.;
+        q = -2. * sqrt(q);
+        x1 = q * cos(t / 3.) - a;
+        x2 = q * cos((t + M_2PI) / 3.) - a;
+        x3 = q * cos((t - M_2PI) / 3.) - a;
+        cout << "Root 1 = " << x1 << endl;
+        cout << "Root 2 = " << x2 << endl;
+        cout << "Root 3 = " << x3 << endl;
+    }
+    else
+    {
+        double aa, bb;
+        if (r <= 0.)
+            r = -r;
+        aa = -pow(r + sqrt(r2 - q3), 1. / 3.);
+        if (aa != 0.)
+            bb = q / aa;
+        else
+            bb = 0.;
+        a /= 3.;
+        q = aa + bb;
+        r = aa - bb;
+        x1 = q - a;
+        x2 = (-0.5) * q - a;
+        x3 = (sqrt(3.) * 0.5) * fabs(r);
+        if (x3 == 0.)
+        {
+            cout << "Root 1 = " << x1 << endl;
+            cout << "Root 2 = " << x2 << endl;
+        }
+        cout << "Root 1 = " << x1 << endl;
+    }
+}
+
 template <typename T>
 void Mnogochlen<T>::GetRoots() const
 {
@@ -302,7 +358,6 @@ void Mnogochlen<T>::GetRoots() const
     }
     Node<T> *Pointer = GetHead();
     Mnogochlen Normalized = Normalize();
-    // cout << Normalized << endl;
     T a = Normalized[2];
     T b = Normalized[1];
     T c = Normalized[0];
@@ -347,7 +402,10 @@ void Mnogochlen<T>::GetRoots() const
             cout << "Root 1 = " << x1 << endl;
             cout << "Root 2 = " << x2 << endl;
         }
-        cout << "Root 1 = " << x1 << endl;
+        else
+        {
+            cout << "Root 1 = " << x1 << endl;
+        }
     }
 }
 

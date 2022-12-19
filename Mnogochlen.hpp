@@ -60,15 +60,6 @@ public:
     void GetRoots() const;
 
     T CountValue(T x) const;
-
-    // friend ostream &operator<<(ostream &os, const Mnogochlen &Obj);
-
-    /*
-    friend bool operator>(const T& a, const T& b);
-    friend bool operator<(const T& a, const T& b);
-    friend bool operator>=(const T& a, const T& b);
-    friend bool operator>=(const T& a, const T& b);
-    */
 };
 
 template <typename T>
